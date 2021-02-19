@@ -1,0 +1,12 @@
+/* Add your styles here */
+canvas {
+  border: solid 1px green;
+}
+
+.hide{
+display:none;
+}
+
+.show{
+display:block;
+}
