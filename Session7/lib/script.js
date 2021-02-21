@@ -105,12 +105,12 @@ function checkReady(){
 
 //Crystal Collision Detection
 
-if (player.x < crystal.x + 32 &&
-   player.x + 64 > crystal.x &&
-   player.y < crystal.y + 32 &&
-   player.y + 64 > crystal.y) {
+if (player.x < crystal.x + 16 &&
+   player.x + 32 > crystal.x &&
+   player.y < crystal.y + 16 &&
+   player.y + 32 > crystal.y) {
     console.log("Collision!!");
-    crystal.countdown = 500; //Would add increased playerSpeed here & decrease enemySpeed && different sprites
+    crystal.countdown = 100; //Would add increased playerSpeed here & decrease enemySpeed && different sprites
 }
 
    if(crystal.countdown > 0){

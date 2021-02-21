@@ -29,77 +29,65 @@ canvas1.onclick = function() {
 function game (){
 
 
-  //Math Random demo
-//console.log(Math.random());
-//console.log(Math.floor(Math.random()));
-//console.log(Math.floor(Math.random() * 10));
-
 //Random number function
 function myRandomNum(n){
   return Math.floor(Math.random() * n);
-  //console.log(Math.floor(Math.random() * n));
 }
-
-// myRandomNum(450);
-// myRandomNum(250);
 
 //Variables
 var playerScore = 0;
 var enemyScore = 0;
+var powerUpAvailable = true; //so crystal can be seen
+
+
+var playerSpritesheet = {
+  leftNormalX: 64 * 4,
+  rightNormalX: 64 * 5,
+  upDownNormalX: 64 * 9,
+  leftPoweredX: 64 * 6,
+  rightPoweredX:64 * 7,
+  upDownPoweredX: 64 * 10
+}
 
 var player = {
   x: 20,
-  y: 0
-}
+  y: 0,
+  facing: playerSpritesheet.rightNormalX,
+  poweredUp: false
+  }
 
-//3nd iteration - crystal object - 1st iteration hard codes x and y in render() drawImage(). 2nd uses x and y = 100 here. 3rd uses random
+
+
 var crystal = {
-  // x: 100,
-  // y: 100
   x: myRandomNum(450),
   y: myRandomNum(250)
 }
 
-//Adding enemy
-var enemy = {
-  x: myRandomNum(450),
-  y: myRandomNum(250),
-  moving: -2,
-  speed: 2,
-  dirX: 0,
-  dirY: 0
-}
+var countdown = 0;
 
 //Loading player and POWERUP image
 var playerImage = new Image();
-playerImage.src = "https://i.postimg.cc/xTVnWHs6/pixilart-drawing.png";
+playerImage.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
 
 var crystalImage = new Image();
 crystalImage.src = "https://i.postimg.cc/nc52ggMs/diamond-417896-640.png";
 
-var enemyImage = new Image();
-enemyImage.src = "https://i.postimg.cc/DzGZvJ2Q/Ghosts.png";
-
-
-playerImage.ready = false;
-crystalImage.ready = false;
-enemyImage.ready = false;
-
+var backgroundImage = new Image();
+backgroundImage.src = "https://i.postimg.cc/6qnPD68B/matrix-356024-640.jpg";
 
 playerImage.onload = checkReady();
 
 
 //Check Ready & PlayGame
 function checkReady(){
-   this.ready=true; //playerImage
+   playerImage.ready=true; //playerImage
    crystalImage.ready = true;
-   enemyImage.ready = true;
+   backgroundImage.ready = true;
    playGame();
  }
 
  function playGame(){
    render();
-   //playerScore++;
    requestAnimationFrame(playGame);
  }
 
@@ -108,47 +96,55 @@ function checkReady(){
 //Rendering including Score Board & Sprites. NOT Movement. Separate function.
  function render(){
 
-   context2.fillStyle = "black";
-   context2.fillRect(0,0, 600, 400);
-
-   //Scoreboard
-   context2.font = "20px Arial";
-   context2.fillStyle = "green";
-   context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
-
-//Draw Player
-   context2.drawImage(playerImage, player.x, player.y, 64,64);
+   //Background - updated below to load background image
+   //context2.fillStyle = "black";
+   //context2.fillRect(0,0, 600, 400);
 
 
-//Draw POWERUP - USING RANDOM COORDINATES
-//context2.drawImage(crystalImage, 100, 100, 32, 32);
-context2.drawImage(crystalImage, crystal.x, crystal.y, 32, 32);
+//Draw background matrix image
+context2.drawImage(backgroundImage, 0, 0, 600, 400);
+
+//Scoreboard
+context2.font = "20px Arial";
+context2.fillStyle = "orange";
+context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
 
 
-//Draw enemy using spritesheet
-context2.drawImage(enemyImage, 20, 0, 32, 32, enemy.x, enemy.y, 64, 64);
+   //Draw POWERUP - USING RANDOM COORDINATES
+   context2.drawImage(crystalImage, crystal.x, crystal.y, 32, 32);
 
 
-
-if (enemy.moving < 0) {
-  enemy.moving = myRandomNum(40);//eg 38. You want it around here as it's a change of dir countdown
-  enemy.speed = myRandomNum(2) + 1; //Could be 0 otherwise. Even when I increased to 4. This random number gives random change of direction too.
-  enemy.dirX = 0;
-  enemy.dirX = 0;
+//Draw Player last so goes over the crystal
+   context2.drawImage(playerImage, player.facing, 0, 64, 64, player.x, player.y, 64,64);
 
 
-  if(enemy.moving % 2){ //Even
-    enemy.x = enemy.x + 10;
-    enemy.y = enemy.y + 5;
-    } else {
-      enemy.x = enemy.x - 5;
-      enemy.y = enemy.y - 10;
-    }
-  }
+   //crystalPosition();
+   if(powerUpAvailable && crystal.countdown < 10){
+     crystal.x = myRandomNum(450);
+     crystal.y = myRandomNum(250);
+     powerUpAvailable = false;
+     player.poweredUp = false;
+   }
 
+//Crystal Collision Detection
 
-enemy.moving--;
+if (player.x < crystal.x + 16 &&
+   player.x + 32 > crystal.x &&
+   player.y < crystal.y + 16 &&
+   player.y + 32 > crystal.y) {
+    console.log("Collision!!");
+    crystal.countdown = 100; //Would add increased playerSpeed here & decrease enemySpeed && different sprites
+    player.poweredUp = true;
 
+}
+
+   if(crystal.countdown > 0){
+     crystal.countdown--;
+     crystal.x = -20; //Hiding crystal
+     crystal.y = -20; //Hiding crystal
+     console.log(crystal.countdown);
+     powerUpAvailable = true; //In readiness for it to be drawn again
+   }
 }
 
 
@@ -160,23 +156,45 @@ document.addEventListener('keydown', function (event) {
 });
 
  function move(event){
+   if(!player.poweredUp){
+
    if(event.key === "w"){
      player.y-=10;
+     player.facing = playerSpritesheet.upDownNormalX;
   }
   if(event.key === "s"){
     player.y+=10;
+    player.facing = playerSpritesheet.upDownNormalX;
  }
  if(event.key === "a"){
    player.x-=10;
+   player.facing = playerSpritesheet.leftNormalX;
 }
 if(event.key === "d"){
   player.x+=10;
+  player.facing = playerSpritesheet.rightNormalX;
 }
-
+} else {
+  if(event.key === "w"){
+    player.y-=10;
+    player.facing = playerSpritesheet.upDownPoweredX;
+ }
+ if(event.key === "s"){
+   player.y+=10;
+   player.facing = playerSpritesheet.upDownPoweredX;
+}
+if(event.key === "a"){
+  player.x-=10;
+  player.facing = playerSpritesheet.leftPoweredX;
+}
+if(event.key === "d"){
+ player.x+=10;
+ player.facing = playerSpritesheet.rightPoweredX;
+}
+}
 
    render();
 
  }
 
-
-}//End of game function
+} //End of game function
