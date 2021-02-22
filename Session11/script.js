@@ -198,14 +198,6 @@ function checkReady(){
         //    canScore = true;
         //  }
 
-
-
-
-
-
-
-
-
  //Score & Sprites
    context.font = "20px Verdana";
    context.fillStyle = "white";
