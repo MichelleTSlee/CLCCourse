@@ -23,42 +23,17 @@ canvas1.onclick = function() {
   console.log("Now using canvas2");
 }
 
-//Variables
+//Adding Scoreboard
 
  var playerScore = 0;
  var enemyScore = 0;
 
+context2.font = "20px Arial";
+context2.fillStyle = "green";
+context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
 
+canvas2.onclick = function() {
+  playerScore++;
+  console.log(playerScore);
 
-//=============================================================//
-//Loading player image
-var playerImage = new Image();
-playerImage.src = "https://i.postimg.cc/hGm38dT4/spritenormalright.png";
-
-
-playerImage.onload = checkReady();
-
- //Check Ready & PlayGame
- function checkReady(){
-    playerImage.ready=true;
-    playGame();
-  }
-
-  function playGame(){
-    render();
-    //playerScore++;
-    requestAnimationFrame(playGame);
-  }
-
-  //=============================================================//
-
-  function render(){
-
-    //Scoreboard
-    context2.font = "20px Arial";
-    context2.fillStyle = "green";
-    context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
-
-  //Draw Sprite
-    context2.drawImage(playerImage, 0, 20, 64,64);
-  }
+}

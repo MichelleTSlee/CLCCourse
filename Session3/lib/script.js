@@ -23,15 +23,6 @@ canvas1.onclick = function() {
   console.log("Now using canvas2");
 }
 
-// context2.strokeStyle = "red";
-// context2.font = '50px serif';
-// context2.strokeText("Game Screen!!!", 150, 200);
-
-//Adding Scoreboard
-
- var playerScore = 0;
- var enemyScore = 0;
-
-     context2.font = "20px Arial";
-    context2.fillStyle = "green";
-    context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
+ context2.strokeStyle = "red";
+ context2.font = '50px serif';
+ context2.strokeText("Game Screen!!!", 150, 200);

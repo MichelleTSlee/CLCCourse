@@ -21,125 +21,52 @@ canvas1.onclick = function() {
   console.log("Canvas1 gone");
   canvas2.classList.add('show');
   console.log("Now using canvas2");
-  game();
-}
-//==============================================================//
-
-//Key Down demo
-document.addEventListener('keydown', function(event) {
-  console.log(event);
-  if (event.key == "w"){
-    console.log("W was pressed");
-  } else {
-    console.log("W was not pressed");
   }
-});
-
-//If Syntax
-// if(thing to test){
-//   DO THIS IF THING TO TEST IS TRUE
-// } else {
-//   DO SOMETHING ELSE
-// }
-
 //==============================================================//
-
-function game (){
 //Variables
 var playerScore = 0;
 var enemyScore = 0;
 
-var player = {
-  x: 20,
-  y: 0
+//Temp code to demo updating playerScore
+canvas2.onclick = function() {
+  playerScore++;
+  console.log(playerScore);
 }
-
-
-//KeyClick Listeners
-// var keyClick = {};
-//
-// document.addEventListener("keydown", function(event){
-//   keyClick[event.keyCode] = true;
-//   console.log(event);
-//   console.log(keyClick);
-//   move(keyClick);
-// }, false);
-//
-// document.addEventListener("keyup", function(event){
-//   delete keyClick[event.keyCode];
-//   console.log(event);
-//   console.log(keyClick);
-// }, false);
-
-
-
 
 //Loading player image
 var playerImage = new Image();
-
 playerImage.src = "https://i.postimg.cc/hGm38dT4/spritenormalright.png";
 
 
 playerImage.onload = checkReady();
 
-
-
-
-//Check Ready & PlayGame
-function checkReady(){
-   playerImage.ready=true;
-   playGame();
- }
-
- function playGame(){
-   render();
-   //playerScore++;
-   requestAnimationFrame(playGame);
- }
-
-//=============================================================//
-
-//Rendering including Score Board & Sprites. NOT Movement. Separate function.
- function render(){
-
-   context2.fillStyle = "black";
-   context2.fillRect(0,0, 600, 400);
-
-   //Scoreboard
-   context2.font = "20px Arial";
-   context2.fillStyle = "green";
-   context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
-
-//Draw Sprite
-   context2.drawImage(playerImage, player.x, player.y, 64,64);
-}
-
-
-//=========================================================//
-
-//Player Move
-document.addEventListener('keydown', function (event) {
-  move(event);
-});
-
- function move(event){
-   if(event.key === "w"){
-     player.y-=10;
+ //Check Ready & PlayGame
+ function checkReady(){
+    playerImage.ready=true;
+    playGame();
   }
-  if(event.key === "s"){
-    player.y+=10;
- }
- if(event.key === "a"){
-   player.x-=10;
+
+  function playGame(){
+    render();
+    requestAnimationFrame(playGame);
+  }
+
+
+
+  //=============================================================//
+
+  function render(){
+
+    //Black background
+    context2.fillStyle = "black";
+    context2.fillRect(0,0, 600, 400);
+
+    //Scoreboard
+    context2.font = "20px Arial";
+    context2.fillStyle = "green";
+    context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
+
+   //Player Sprite
+    context2.drawImage(playerImage, 0, 20, 64,64);
+
 }
-if(event.key === "d"){
-  player.x+=10;
-}
-
-
-   render();
-
- }
-
-
-}//End of game function
