@@ -1,4 +1,5 @@
 
+
 var canvas1 = document.getElementById("canvas1");
 var context1 = canvas1.getContext("2d");
 
@@ -29,6 +30,7 @@ playerImage.src = "https://i.postimg.cc/hGm38dT4/spritenormalright.png";
 var crystalImage = new Image();
 crystalImage.src = "https://i.postimg.cc/nc52ggMs/diamond-417896-640.png";
 
+
 //Variables
 var playerScore = 0;
 var enemyScore = 0;
@@ -36,6 +38,8 @@ var playerX = 100;
 var playerY = 100;
 var crystalX = Math.floor(Math.random() * 450);
 var crystalY = Math.floor(Math.random() * 250);
+
+
 
 //Check player image ready & call render()
 playerImage.onload = render();
@@ -52,14 +56,13 @@ playerImage.onload = render();
     context2.fillStyle = "white";
     context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
 
-   //Player Sprite
-    //context2.drawImage(playerImage, 100, 100, 64,64);
-    context2.drawImage(playerImage, playerX, playerY, 64,64);
-
     //Power Up
     //context2.drawImage(crystalImage, 100, 100, 32, 32);
     context2.drawImage(crystalImage, crystalX, crystalY, 32, 32);
 
+
+   //Player Sprite
+    context2.drawImage(playerImage, playerX, playerY, 64,64);
 
 
 //Redraw screen
@@ -71,20 +74,33 @@ playerImage.onload = render();
      playerScore++;
     }
 
+    //Player Move
     document.addEventListener('keydown', function (event) {
-      if(event.key === "w"){
+      playerMove(event);
+    });
+
+    function playerMove(event){
+
+      if(event.key == "w"){
          playerY-=10;
       }
-      if(event.key === "s"){
+      else if(event.key == "s"){
         playerY+=10;
      }
-     if(event.key === "a"){
+      else if(event.key == "a"){
        playerX-=10;
-    }
-    if(event.key === "d"){
+     }
+     else if(event.key == "d"){
       playerX+=10;
       }
-    });
+//Player reappears on left if goes off screen right & vice versa & top/bottom too
+      if(playerX > canvas2.width-32){playerX = 0};
+      if(playerX < 0){playerX = canvas2.width-32};
+      if(playerY > canvas2.height-32){playerY = 0};
+      if(playerY < 0){playerY = canvas2.height-32};
+
+    };
+
 
     //==============================================================//
 
