@@ -21,10 +21,11 @@ canvas1.onclick = function() {
   canvas2.classList.add('show');
 }
 
-
 // Loading images
 var playerImage = new Image();
-playerImage.src = "https://i.postimg.cc/hGm38dT4/spritenormalright.png";
+
+//Using spritesheet
+playerImage.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
 
 var crystalImage = new Image();
 crystalImage.src = "https://i.postimg.cc/nc52ggMs/diamond-417896-640.png";
@@ -34,13 +35,18 @@ var playerScore = 0;
 var enemyScore = 0;
 var playerX = 100;
 var playerY = 100;
+var crystalX = myRandomNum(450);
+var crystalY = myRandomNum(250);
 
-var crystalX = Math.floor(Math.random() * 450);
-var crystalY = Math.floor(Math.random() * 250);
+//Calculate numbers for x value on spritesheet which selects correct sprite. Y is 0 as only one row & top left starts at 0
+var leftNormal = 64 * 4;
+var rightNormal = 64 * 5;
+var upDownNormal = 64 * 9;
 
-//Added/Updated for S7
-//var crystalX = myRandomNum(450); 
-//var crystalY = myRandomNum(250);
+//Set starting position
+var spritesheetX = rightNormal; //x value
+var spritesheetY = 0; //y
+
 
 //Check player image ready & call render()
 playerImage.onload = render();
@@ -61,26 +67,23 @@ playerImage.onload = render();
     context2.drawImage(crystalImage, crystalX, crystalY, 32, 32);
 
     //Player Sprite
-    context2.drawImage(playerImage, playerX, playerY, 64,64);
+    context2.drawImage(playerImage, spritesheetX, spritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to te spritesheet.
 
     //Crystal collision detection
     if (playerX < crystalX + 32 &&
       playerX + 32 > crystalX &&
       playerY < crystalY + 32 &&
       playerY + 32 > crystalY) {
-      console.log("Collision!!");
-
-      hideCrystal();
-    }
+            hideCrystal();
+       }
 
     //Redraw screen
     requestAnimationFrame(render);
   }
 
     function hideCrystal(){
-        crystalX = -20; //Hiding crystal
-        crystalY = -20; //Hiding crystal
-        console.log("Hidden");
+        crystalX = -20;
+        crystalY = -20; 
         setTimeout(showCrystal, 5000);
       }
 
@@ -97,15 +100,19 @@ playerImage.onload = render();
     function playerMove(event){
       if(event.key == "w"){
          playerY-=10;
+         spritesheetX = upDownNormal;
       }
       else if(event.key == "s"){
         playerY+=10;
+        spritesheetX = upDownNormal;
      }
       else if(event.key == "a"){
        playerX-=10;
+       spritesheetX = leftNormal;
      }
      else if(event.key == "d"){
       playerX+=10;
+      spritesheetX = rightNormal;
     }
 //Player reappears on left if goes off screen right & vice versa & top/bottom too
       if(playerX > canvas2.width- 32){

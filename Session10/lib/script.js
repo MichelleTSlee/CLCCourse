@@ -30,7 +30,8 @@ canvas1.onclick = function() {
 
 
 function game (){
-  //Addng sound & using local storage not purple
+
+  //Addng sound & using local
   var myGameAudio = new Audio("./assets/gamePlay.wav");//NB Chrome update preventing autoplay has meant couldn't easily have music on Start Game Screen
   myGameAudio.play();
 
