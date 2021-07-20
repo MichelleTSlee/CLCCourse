@@ -1,3 +1,4 @@
+
 var canvas1 = document.getElementById("canvas1");
 var context1 = canvas1.getContext("2d");
 
@@ -21,11 +22,14 @@ canvas1.onclick = function() {
   canvas2.classList.add('show');
 }
 
-// Loading images
-var mainSpritesheet = new Image(); //Changed name from S7
+// Loading images - //CHANGE NAME to MAIN SPRITESHEET
+var playerImage = new Image();
+//var mainSpritesheett = new Image();
 
-//Using spritesheet
-mainSpritesheet.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
+//Using spritesheet - see UPDATE in //
+playerImage.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
+//mainSpritesheet.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
+
 
 var crystalImage = new Image();
 crystalImage.src = "https://i.postimg.cc/nc52ggMs/diamond-417896-640.png";
@@ -37,38 +41,44 @@ var playerX = 100;
 var playerY = 100;
 var crystalX = myRandomNum(450);
 var crystalY = myRandomNum(250);
+//NEW for 8
+var enemyX = 200;
+var enemyY = 200;
 
-//Calculate numbers for x value on spritesheet which selects correct sprite. Y is 0 as only one row & top left starts at 0
-var playerLeftNormal = 64 * 4; //Changed from S7
-var playerRightNormal = 64 * 5;
-var playerUpDownNormal = 64 * 9;
+//Calculate numbers for PLAYER x value on spritesheet which selects correct sprite. Y is 0 as only one row & top left starts at 0
+var leftNormal = 64 * 4;
+var rightNormal = 64 * 5;
+var upDownNormal = 64 * 9;
 
+//REMOVE ABOVE & REPLACE WITH BELOW - MORE SPECIFIC
+//var playerLeftNormal = 64 * 4;
+//var playerRightNormal = 64 * 5;
+//var playerUpDownNormal = 64 * 9;
 
-//New S8 variables
-var enemyX = myRandomNum(450);
-var enemyY = myRandomNum(250);
-var enemy = false;
-var enemyTimeUntilChangeDir = 0;
-var dirRandomiser;
-var enemyDirX;
-var enemyDirY;
+//Calculate numbers for ENEMY x value on spritesheet which selects correct sprite. U is 0 as only 1 row in our sprite sheet and the Y o rows starts at 0.
 var enemyLeftNormal = 0;
 var enemyRightNormal = 64 * 2;
+var enemyUpDownNormal = 64 * 9;//CHECK WHAT THIS SHOULD BE
 
 
+//Set starting position of PLAYER
+var spritesheetX = rightNormal; //x value
+var spritesheetY = 0; //y
+
+//REPLACE ABOVE WITH BELOW - MORE SPECIFIC
+//var playerSpritesheetX = rightNormal; //x value
+//var playerSpritesheetY = 0; //y
+
+//SET STARTING POSITION OF ENEMY
+var enemySpritesheetX = enemyRightNormal; //x value
+var enemySpritesheetY = 0; //y
 
 
-//Set starting position
-var spritesheetPlayerSelectX = playerRightNormal; //x value. Changed from S7
-var spritesheetPlayerSelectY = 0; //y
+//Check player image ready & call render() - CHANGE TO JUST IMAGE
+playerImage.onload = render();
 
-//New for S8
-var spritesheetEnemySelectX = enemyLeftNormal;
-var spritesheetEnemySelectY = 0; //y
-
-
-//Check player image ready & call render()
-mainSpritesheet.onload = render();
+//REPLACE ABOVE WITH FOLLOWING
+//mainSpritesheet.onload = render();
 
 //This function draws the background, the scoreboard & the Sprites
  function render(){
@@ -85,11 +95,16 @@ mainSpritesheet.onload = render();
     //Show crystal
     context2.drawImage(crystalImage, crystalX, crystalY, 32, 32);
 
-    //Player Sprite
-    context2.drawImage(mainSpritesheet, spritesheetPlayerSelectX, spritesheetPlayerSelectY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to te spritesheet.
+    //Player Sprite - //CHANGE TO // VERSION BELOW
+    context2.drawImage(playerImage, spritesheetX, spritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
 
-    //Enemy Sprite - new for S8
-    context2.drawImage(mainSpritesheet, spritesheetEnemySelectX, spritesheetEnemySelectY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to te spritesheet.
+    //context2.drawImage(mainSpritesheet, playerSpritesheetX, playerSpritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
+
+
+    //Enemy Sprite - //HANGE TO // VERSION BELOW
+    context2.drawImage(playerImage, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
+
+    //context2.drawImage(mainSpritesheet, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
 
     //Crystal collision detection
     if (playerX < crystalX + 32 &&
@@ -99,63 +114,14 @@ mainSpritesheet.onload = render();
             hideCrystal();
        }
 
-  //Player & Enemy collision - new S8
-  if (playerX < enemyX + 64 &&
-    playerX + 32 > enemyX &&
-    playerY < enemyY + 64 &&
-    playerY + 32 > enemyY) {
-          //console.log("Collision");
-     }
-       //Enemy Move
-       if(!enemy){
-         enemyX = myRandomNum(450);
-         enemyY = myRandomNum(250) + 30;//So not too close to top
-         enemy=true;
-       }
-
-       if (enemyTimeUntilChangeDir < 1) {
-         enemyTimeUntilChangeDir = myRandomNum(40);//eg 38. You want it around here as it's a change of dir countdown
-         dirRandomiser = myRandomNum(2) + 1; //Could be 0 otherwise. Even when I increased to 4. This random number gives random change of direction too.
-         enemyDirX = 0;
-         enemyDirY = 0;
-
-         if(enemyTimeUntilChangeDir % 2){ //Even
-           if(playerX < enemyX){
-             enemyDirX = -dirRandomiser; // eg -1
-             spritesheetEnemySelectX = enemyLeftNormal;
-           } else {
-             enemyDirX = dirRandomiser; //eg 1
-             spritesheetEnemySelectX = enemyRightNormal;
-           }
-         } else {
-           if (playerY < enemyY){
-             enemyDirY = -dirRandomiser;
-            } else {
-             enemyDirY = dirRandomiser;
-            }
-         }
-       }
-
-       enemyTimeUntilChangeDir--;
-
-       enemyX = enemyX + enemyDirX; //Wherever he started plus or minus 1
-       enemyY = enemyY + enemyDirY; //Wherever he started plus or minus 1
-
-       //Enemy reappears on left if goes off screen right & vice versa & top/bottom too
-             if(enemyX > canvas2.width- 32){
-               enemyX = 0
-             };
-
-             if(enemyX < 0 - 32){
-               enemyX = canvas2.width-32
-             };
-
-             if(enemyY > canvas2.height-32){
-               enemyY = 0
-             };
-             if(enemyY < 0 - 32){
-               enemyY = canvas2.height-32
-             };
+       //PLAYER & ENEMY COLLISION DETECTION
+       if (playerX < enemyX + 32 &&
+         playerX + 32 > enemyX &&
+         playerY < enemyY + 32 &&
+         playerY + 32 > enemyY) {
+               //console.log("Collision");
+               //enemyScore++; WILL NEED A DELAY. USE THE HIDE CRYSTAL APPROACH
+          }
 
     //Redraw screen
     requestAnimationFrame(render);
@@ -176,24 +142,46 @@ mainSpritesheet.onload = render();
     //Player Move Keydown Event Listener
     document.addEventListener('keydown', playerMove); //Have simplified this code
 
-//Player Move function
+//Player Move function - //REPLACE WITH COMMENTED OUT VERSION BELOW WHICH IS MORE SPECIFIC
     function playerMove(event){
       if(event.key == "w"){
          playerY-=10;
-         spritesheetX = playerUpDownNormal;
+         spritesheetX = upDownNormal;
       }
       else if(event.key == "s"){
         playerY+=10;
-        spritesheetX = playerUpDownNormal;
+        spritesheetX = upDownNormal;
      }
       else if(event.key == "a"){
        playerX-=10;
-       spritesheetX = playerLeftNormal;
+       spritesheetX = leftNormal;
      }
      else if(event.key == "d"){
       playerX+=10;
-      spritesheetX = playerRightNormal;
+      spritesheetX = rightNormal;
     }
+
+
+//NEW VERSION - MORE SPECIFIC
+
+    // function playerMove(event){
+    //   if(event.key == "w"){
+    //      playerY-=10;
+    //      playerSpritesheetX = playerUpDownNormal;
+    //   }
+    //   else if(event.key == "s"){
+    //     playerY+=10;
+    //     playerSpritesheetX = playerUpDownNormal;
+    //  }
+    //   else if(event.key == "a"){
+    //    playerX-=10;
+    //    playerSpritesheetX = playerLeftNormal;
+    //  }
+    //  else if(event.key == "d"){
+    //   playerX+=10;
+    //   playerSpritesheetX = playerRightNormal;
+    // }
+
 //Player reappears on left if goes off screen right & vice versa & top/bottom too
       if(playerX > canvas2.width- 32){
         playerX = 0
@@ -210,6 +198,7 @@ mainSpritesheet.onload = render();
         playerY = canvas2.height-32
       };
     };
+
 
 //==============================================================//
     //Update playerScore when screen clicked
