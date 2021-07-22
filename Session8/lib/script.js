@@ -23,12 +23,12 @@ canvas1.onclick = function() {
 }
 
 // Loading images - //CHANGE NAME to MAIN SPRITESHEET
-var playerImage = new Image();
-//var mainSpritesheett = new Image();
+//var playerImage = new Image();
+var mainSpritesheet = new Image();
 
 //Using spritesheet - see UPDATE in //
-playerImage.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
-//mainSpritesheet.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
+//playerImage.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
+mainSpritesheet.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
 
 
 var crystalImage = new Image();
@@ -37,48 +37,56 @@ crystalImage.src = "https://i.postimg.cc/nc52ggMs/diamond-417896-640.png";
 //Variables
 var playerScore = 0;
 var enemyScore = 0;
+
 var playerX = 100;
 var playerY = 100;
+
 var crystalX = myRandomNum(450);
 var crystalY = myRandomNum(250);
+
+var canScore = true;
+var playerPoweredUp=false;
+
 //NEW for 8
 var enemyX = 200;
 var enemyY = 200;
 
 //Calculate numbers for PLAYER x value on spritesheet which selects correct sprite. Y is 0 as only one row & top left starts at 0
-var leftNormal = 64 * 4;
-var rightNormal = 64 * 5;
-var upDownNormal = 64 * 9;
+// var leftNormal = 64 * 4;
+// var rightNormal = 64 * 5;
+// var upDownNormal = 64 * 9;
 
 //REMOVE ABOVE & REPLACE WITH BELOW - MORE SPECIFIC
-//var playerLeftNormal = 64 * 4;
-//var playerRightNormal = 64 * 5;
-//var playerUpDownNormal = 64 * 9;
+var playerLeftNormal = 64 * 4;
+var playerRightNormal = 64 * 5;
+var playerUpDownNormal = 64 * 9;
+
+var playerLeftPoweredUp = 64 * 6;
+var playerRightPoweredUp = 64 * 7;
+var playerUpDownPoweredUp = 64 * 10;
 
 //Calculate numbers for ENEMY x value on spritesheet which selects correct sprite. U is 0 as only 1 row in our sprite sheet and the Y o rows starts at 0.
 var enemyLeftNormal = 0;
 var enemyRightNormal = 64 * 2;
-var enemyUpDownNormal = 64 * 9;//CHECK WHAT THIS SHOULD BE
+var enemyUpDownNormal = 64 * 8;
 
 
 //Set starting position of PLAYER
-var spritesheetX = rightNormal; //x value
-var spritesheetY = 0; //y
-
+// var spritesheetX = rightNormal; //x value
+// var spritesheetY = 0; //y
 //REPLACE ABOVE WITH BELOW - MORE SPECIFIC
-//var playerSpritesheetX = rightNormal; //x value
-//var playerSpritesheetY = 0; //y
+var playerSpritesheetX = playerRightNormal; //x value
+var playerSpritesheetY = 0; //y
 
 //SET STARTING POSITION OF ENEMY
-var enemySpritesheetX = enemyRightNormal; //x value
+var enemySpritesheetX = enemyLeftNormal; //x value
 var enemySpritesheetY = 0; //y
 
 
 //Check player image ready & call render() - CHANGE TO JUST IMAGE
-playerImage.onload = render();
-
+//playerImage.onload = render();
 //REPLACE ABOVE WITH FOLLOWING
-//mainSpritesheet.onload = render();
+mainSpritesheet.onload = render();
 
 //This function draws the background, the scoreboard & the Sprites
  function render(){
@@ -96,15 +104,13 @@ playerImage.onload = render();
     context2.drawImage(crystalImage, crystalX, crystalY, 32, 32);
 
     //Player Sprite - //CHANGE TO // VERSION BELOW
-    context2.drawImage(playerImage, spritesheetX, spritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
+    // context2.drawImage(playerImage, spritesheetX, spritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
+    context2.drawImage(mainSpritesheet, playerSpritesheetX, playerSpritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
 
-    //context2.drawImage(mainSpritesheet, playerSpritesheetX, playerSpritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
+    //Enemy Sprite - //CHANGE TO // VERSION BELOW
+    // context2.drawImage(playerImage, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
 
-
-    //Enemy Sprite - //HANGE TO // VERSION BELOW
-    context2.drawImage(playerImage, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
-
-    //context2.drawImage(mainSpritesheet, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
+    context2.drawImage(mainSpritesheet, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
 
     //Crystal collision detection
     if (playerX < crystalX + 32 &&
@@ -120,8 +126,19 @@ playerImage.onload = render();
          playerY < enemyY + 32 &&
          playerY + 32 > enemyY) {
                //console.log("Collision");
-               //enemyScore++; WILL NEED A DELAY. USE THE HIDE CRYSTAL APPROACH
-          }
+               // if(canScore){
+               //   enemyScore++;
+               //   pauseScoring();
+               // }
+               //Replace above with following when you want scoring to depend on being powered up or not
+               if(canScore && !playerPoweredUp){
+                 enemyScore++;
+                 pauseScoring();
+               } else if (canScore && playerPoweredUp){
+                 playerScore++;
+                 pauseScoring();
+               }
+             }
 
     //Redraw screen
     requestAnimationFrame(render);
@@ -130,57 +147,89 @@ playerImage.onload = render();
     function hideCrystal(){
         crystalX = -20;
         crystalY = -20;
+        playerPoweredUp = true;
         setTimeout(showCrystal, 5000);
       }
 
       function showCrystal(){
         crystalX = myRandomNum(450);
         crystalY = myRandomNum(250);
-      }
+        playerPoweredUp = false;
+        }
+
+
+      function pauseScoring(){
+          canScore=false;
+          setTimeout(resumeScoring, 5000);
+        }
+
+        function resumeScoring(){
+          canScore = true;
+        }
 
 
     //Player Move Keydown Event Listener
     document.addEventListener('keydown', playerMove); //Have simplified this code
 
 //Player Move function - //REPLACE WITH COMMENTED OUT VERSION BELOW WHICH IS MORE SPECIFIC
-    function playerMove(event){
-      if(event.key == "w"){
-         playerY-=10;
-         spritesheetX = upDownNormal;
-      }
-      else if(event.key == "s"){
-        playerY+=10;
-        spritesheetX = upDownNormal;
-     }
-      else if(event.key == "a"){
-       playerX-=10;
-       spritesheetX = leftNormal;
-     }
-     else if(event.key == "d"){
-      playerX+=10;
-      spritesheetX = rightNormal;
-    }
+    // function playerMove(event){
+    //   if(event.key == "w"){
+    //      playerY-=10;
+    //      spritesheetX = upDownNormal;
+    //   }
+    //   else if(event.key == "s"){
+    //     playerY+=10;
+    //     spritesheetX = upDownNormal;
+    //  }
+    //   else if(event.key == "a"){
+    //    playerX-=10;
+    //    spritesheetX = leftNormal;
+    //  }
+    //  else if(event.key == "d"){
+    //   playerX+=10;
+    //   spritesheetX = rightNormal;
+    // }
 
 
 //NEW VERSION - MORE SPECIFIC
 
-    // function playerMove(event){
-    //   if(event.key == "w"){
-    //      playerY-=10;
-    //      playerSpritesheetX = playerUpDownNormal;
-    //   }
-    //   else if(event.key == "s"){
-    //     playerY+=10;
-    //     playerSpritesheetX = playerUpDownNormal;
-    //  }
-    //   else if(event.key == "a"){
-    //    playerX-=10;
-    //    playerSpritesheetX = playerLeftNormal;
-    //  }
-    //  else if(event.key == "d"){
-    //   playerX+=10;
-    //   playerSpritesheetX = playerRightNormal;
-    // }
+    function playerMove(event){
+      if(!playerPoweredUp){
+      if(event.key == "w"){
+         playerY-=10;
+         playerSpritesheetX = playerUpDownNormal;
+      }
+      else if(event.key == "s"){
+        playerY+=10;
+        playerSpritesheetX = playerUpDownNormal;
+     }
+      else if(event.key == "a"){
+       playerX-=10;
+       playerSpritesheetX = playerLeftNormal;
+     }
+     else if(event.key == "d"){
+      playerX+=10;
+      playerSpritesheetX = playerRightNormal;
+    }
+} else if (playerPoweredUp){
+  if(event.key == "w"){
+     playerY-=10;
+     playerSpritesheetX = playerUpDownPoweredUp;
+  }
+  else if(event.key == "s"){
+    playerY+=10;
+    playerSpritesheetX = playerUpDownPoweredUp;
+ }
+  else if(event.key == "a"){
+   playerX-=10;
+   playerSpritesheetX = playerLeftPoweredUp;
+ }
+ else if(event.key == "d"){
+  playerX+=10;
+  playerSpritesheetX = playerRightPoweredUp;
+}
+}
+
 
 //Player reappears on left if goes off screen right & vice versa & top/bottom too
       if(playerX > canvas2.width- 32){
@@ -202,9 +251,9 @@ playerImage.onload = render();
 
 //==============================================================//
     //Update playerScore when screen clicked
-     canvas2.onclick = function() {
-       playerScore++;
-      }
+     // canvas2.onclick = function() {
+     //   playerScore++;
+     //  }
   //==============================================================//
 
 //New function for random number
