@@ -22,11 +22,11 @@ canvas1.onclick = function() {
   canvas2.classList.add('show');
 }
 
-// Loading images - //CHANGE NAME to MAIN SPRITESHEET
+// Loading images
 //var playerImage = new Image();
 var mainSpritesheet = new Image();
 
-//Using spritesheet - see UPDATE in //
+//Using spritesheet
 //playerImage.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
 mainSpritesheet.src = "https://i.postimg.cc/L8V2Xxch/CLCSpritesheet.png";
 
@@ -44,48 +44,29 @@ var playerY = 100;
 var crystalX = myRandomNum(450);
 var crystalY = myRandomNum(250);
 
-var canScore = true;
-var playerPoweredUp=false;
-
-//NEW for 8
 var enemyX = 200;
 var enemyY = 200;
 
-//Calculate numbers for PLAYER x value on spritesheet which selects correct sprite. Y is 0 as only one row & top left starts at 0
-// var leftNormal = 64 * 4;
-// var rightNormal = 64 * 5;
-// var upDownNormal = 64 * 9;
+var canScore = true;
+var playerPoweredUp=false;
 
-//REMOVE ABOVE & REPLACE WITH BELOW - MORE SPECIFIC
+
 var playerLeftNormal = 64 * 4;
 var playerRightNormal = 64 * 5;
 var playerUpDownNormal = 64 * 9;
-
 var playerLeftPoweredUp = 64 * 6;
 var playerRightPoweredUp = 64 * 7;
 var playerUpDownPoweredUp = 64 * 10;
-
-//Calculate numbers for ENEMY x value on spritesheet which selects correct sprite. U is 0 as only 1 row in our sprite sheet and the Y o rows starts at 0.
 var enemyLeftNormal = 0;
 var enemyRightNormal = 64 * 2;
 var enemyUpDownNormal = 64 * 8;
 
 
-//Set starting position of PLAYER
-// var spritesheetX = rightNormal; //x value
-// var spritesheetY = 0; //y
-//REPLACE ABOVE WITH BELOW - MORE SPECIFIC
 var playerSpritesheetX = playerRightNormal; //x value
 var playerSpritesheetY = 0; //y
-
-//SET STARTING POSITION OF ENEMY
 var enemySpritesheetX = enemyLeftNormal; //x value
 var enemySpritesheetY = 0; //y
 
-
-//Check player image ready & call render() - CHANGE TO JUST IMAGE
-//playerImage.onload = render();
-//REPLACE ABOVE WITH FOLLOWING
 mainSpritesheet.onload = render();
 
 //This function draws the background, the scoreboard & the Sprites
@@ -100,15 +81,10 @@ mainSpritesheet.onload = render();
     context2.fillStyle = "white";
     context2.fillText("Player: " + playerScore + " Enemy: " + enemyScore, 10, 20);
 
-    //Show crystal
+    //Sprites
     context2.drawImage(crystalImage, crystalX, crystalY, 32, 32);
 
-    //Player Sprite - //CHANGE TO // VERSION BELOW
-    // context2.drawImage(playerImage, spritesheetX, spritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
     context2.drawImage(mainSpritesheet, playerSpritesheetX, playerSpritesheetY, 64, 64, playerX, playerY, 64, 64);//args 2-5 relate to the spritesheet.
-
-    //Enemy Sprite - //CHANGE TO // VERSION BELOW
-    // context2.drawImage(playerImage, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
 
     context2.drawImage(mainSpritesheet, enemySpritesheetX, enemySpritesheetY, 64, 64, enemyX, enemyY, 64, 64);//args 2-5 relate to the spritesheet.
 
@@ -125,12 +101,7 @@ mainSpritesheet.onload = render();
          playerX + 32 > enemyX &&
          playerY < enemyY + 32 &&
          playerY + 32 > enemyY) {
-               //console.log("Collision");
-               // if(canScore){
-               //   enemyScore++;
-               //   pauseScoring();
-               // }
-               //Replace above with following when you want scoring to depend on being powered up or not
+
                if(canScore && !playerPoweredUp){
                  enemyScore++;
                  pauseScoring();
@@ -149,14 +120,13 @@ mainSpritesheet.onload = render();
         crystalY = -20;
         playerPoweredUp = true;
         setTimeout(showCrystal, 5000);
-      }
+        }
 
       function showCrystal(){
         crystalX = myRandomNum(450);
         crystalY = myRandomNum(250);
         playerPoweredUp = false;
         }
-
 
       function pauseScoring(){
           canScore=false;
@@ -171,30 +141,11 @@ mainSpritesheet.onload = render();
     //Player Move Keydown Event Listener
     document.addEventListener('keydown', playerMove); //Have simplified this code
 
-//Player Move function - //REPLACE WITH COMMENTED OUT VERSION BELOW WHICH IS MORE SPECIFIC
-    // function playerMove(event){
-    //   if(event.key == "w"){
-    //      playerY-=10;
-    //      spritesheetX = upDownNormal;
-    //   }
-    //   else if(event.key == "s"){
-    //     playerY+=10;
-    //     spritesheetX = upDownNormal;
-    //  }
-    //   else if(event.key == "a"){
-    //    playerX-=10;
-    //    spritesheetX = leftNormal;
-    //  }
-    //  else if(event.key == "d"){
-    //   playerX+=10;
-    //   spritesheetX = rightNormal;
-    // }
-
-
-//NEW VERSION - MORE SPECIFIC
 
     function playerMove(event){
+
       if(!playerPoweredUp){
+
       if(event.key == "w"){
          playerY-=10;
          playerSpritesheetX = playerUpDownNormal;
@@ -211,21 +162,23 @@ mainSpritesheet.onload = render();
       playerX+=10;
       playerSpritesheetX = playerRightNormal;
     }
-} else if (playerPoweredUp){
+}
+
+else if (playerPoweredUp){
   if(event.key == "w"){
-     playerY-=10;
+     playerY-=20;
      playerSpritesheetX = playerUpDownPoweredUp;
   }
   else if(event.key == "s"){
-    playerY+=10;
+    playerY+=20;
     playerSpritesheetX = playerUpDownPoweredUp;
  }
   else if(event.key == "a"){
-   playerX-=10;
+   playerX-=20;
    playerSpritesheetX = playerLeftPoweredUp;
  }
  else if(event.key == "d"){
-  playerX+=10;
+  playerX+=20;
   playerSpritesheetX = playerRightPoweredUp;
 }
 }
@@ -250,11 +203,7 @@ mainSpritesheet.onload = render();
 
 
 //==============================================================//
-    //Update playerScore when screen clicked
-     // canvas2.onclick = function() {
-     //   playerScore++;
-     //  }
-  //==============================================================//
+
 
 //New function for random number
     function myRandomNum(num){
